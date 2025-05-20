@@ -1029,3 +1029,4 @@
 /Users/sergeypchelintsev/Documents/Projects/Experimental/EventEaseApp/obj/Debug/net8.0/refint/EventEaseApp.dll
 /Users/sergeypchelintsev/Documents/Projects/Experimental/EventEaseApp/obj/Debug/net8.0/EventEaseApp.pdb
 /Users/sergeypchelintsev/Documents/Projects/Experimental/EventEaseApp/obj/Debug/net8.0/ref/EventEaseApp.dll
+/Users/sergeypchelintsev/Documents/Projects/Experimental/EventEaseApp/obj/Debug/net8.0/EventEaseApp.sourcelink.json

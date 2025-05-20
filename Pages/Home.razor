@@ -7,12 +7,6 @@
 
 <h2>Events:</h2>
 
-@* Navigation links *@
-<nav>
-    <NavLink href="/" Match="NavLinkMatch.All">Event List</NavLink> |
-    <NavLink href="/register">Register for Event</NavLink>
-</nav>
-
 @* Dynamically render EventCard for each event as a list *@
 <ul>
 @foreach (var evt in events)

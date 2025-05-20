@@ -1,6 +1,82 @@
 @page "/details/{title}"
 
-<h3>Event Details: @title</h3>
+@using Microsoft.AspNetCore.Components
+@using EventEaseApp.Services
+@inject AttendanceService AttendanceService
+
+@inject NavigationManager Navigation
+
+<h2>Event Details</h2>
+
+@* Navigation buttons *@
+<nav>
+    <NavLink href="/">Event List</NavLink> |
+    <NavLink href="@($"/register/{Uri.EscapeDataString(title)}")">Register for Event</NavLink>
+</nav>
+
+@if (eventDetails != null)
+{
+    <div class="event-details-card">
+        <h3>@eventDetails.Title</h3>
+        <p><strong>Date:</strong> @eventDetails.Date.ToString("MMMM dd, yyyy")</p>
+        <p><strong>Location:</strong> @eventDetails.Location</p>
+    </div>
+
+    <h4>Registered Attendees</h4>
+    @if (attendees != null && attendees.Count > 0)
+    {
+        <ul>
+            @foreach (var email in attendees)
+            {
+                <li>@email</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No attendees yet.</p>
+    }
+}
+else
+{
+    <div class="alert alert-warning">Event not found.</div>
+}
+
 @code {
-    [Parameter] public string title { get; set; }
+    [Parameter]
+    public string title { get; set; } = string.Empty;
+
+    // Example: list of events (in a real project, get from service/DB)
+    private List<Event> allEvents = new()
+    {
+        new Event { Title = "Event 1", Date = new DateTime(2023, 10, 1), Location = "New York" },
+        new Event { Title = "Event 2", Date = new DateTime(2023, 11, 15), Location = "London" },
+        new Event { Title = "Event 3", Date = new DateTime(2023, 12, 5), Location = "Tokyo" }
+    };
+
+    private Event? eventDetails;
+    private List<string> attendees = new();
+
+    protected override void OnParametersSet()
+    {
+        // Find event by title (better to use unique ID)
+        eventDetails = allEvents.FirstOrDefault(e => e.Title == title);
+
+        // Get attendees list from AttendanceService
+        if (!string.IsNullOrWhiteSpace(title) && AttendanceService.Attendance.TryGetValue(title, out var emails))
+        {
+            attendees = emails.ToList();
+        }
+        else
+        {
+            attendees = new List<string>();
+        }
+    }
+
+    public class Event
+    {
+        public string Title { get; set; }
+        public DateTime Date { get; set; }
+        public string Location { get; set; }
+    }
 }
