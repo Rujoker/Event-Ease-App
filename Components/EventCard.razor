@@ -1,0 +1,23 @@
+@using System.ComponentModel.DataAnnotations
+
+<div class="event-card">
+    <h3>@Title</h3>
+    <p><strong>Date:</strong> @Date.ToString("MMMM dd, yyyy")</p>
+    <p><strong>Location:</strong> @Location</p>
+</div>
+
+@code {
+    [Parameter]
+    [Required(ErrorMessage = "Title is required")]
+    [StringLength(100, ErrorMessage = "Title is too long (max 100 characters)")]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    [Required(ErrorMessage = "Date is required")]
+    public DateTime Date { get; set; }
+
+    [Parameter]
+    [Required(ErrorMessage = "Location is required")]
+    [StringLength(100, ErrorMessage = "Location is too long (max 100 characters)")]
+    public string Location { get; set; } = string.Empty;
+}

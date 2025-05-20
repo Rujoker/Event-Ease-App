@@ -1,0 +1,75 @@
+﻿@page "/"
+
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components.Routing
+
+<PageTitle>Home</PageTitle>
+
+<h2>Events:</h2>
+
+@* Navigation links *@
+<nav>
+    <NavLink href="/" Match="NavLinkMatch.All">Event List</NavLink> |
+    <NavLink href="/register">Register for Event</NavLink>
+</nav>
+
+@* Dynamically render EventCard for each event as a list *@
+<ul>
+@foreach (var evt in events)
+{
+    <li @key="@evt.Title">
+        <EventCard Title="@evt.Title" Date="@evt.Date" Location="@evt.Location" />
+        <NavLink href="@($"/details/{Uri.EscapeDataString(evt.Title)}")">Details</NavLink>
+        |
+        <NavLink href="@($"/register/{Uri.EscapeDataString(evt.Title)}")">Register</NavLink>
+    </li>
+}
+</ul>
+
+@* Paging for performance if events count is large *@
+@if (events.Count > PageSize)
+{
+    <nav>
+        <button @onclick="@PrevPage" disabled="@(_currentPage == 1)">Previous</button>
+        <span>Page @_currentPage of @TotalPages</span>
+        <button @onclick="@NextPage" disabled="@(_currentPage == TotalPages)">Next</button>
+    </nav>
+}
+
+@code {
+    public class Event
+    {
+        public string Title { get; set; }
+        public DateTime Date { get; set; }
+        public string Location { get; set; }
+    }
+
+    private List<Event> allEvents = new()
+    {
+        new Event { Title = "Event 1", Date = new DateTime(2023, 10, 1), Location = "New York" },
+        new Event { Title = "Event 2", Date = new DateTime(2023, 11, 15), Location = "London" },
+        new Event { Title = "Event 3", Date = new DateTime(2023, 12, 5), Location = "Tokyo" },
+        // Add more mock events here for testing paging/virtualization
+    };
+
+    private const int PageSize = 10;
+    private int _currentPage = 1;
+    private List<Event> events => allEvents.Skip((_currentPage - 1) * PageSize).Take(PageSize).ToList();
+    private int TotalPages => (int)Math.Ceiling(allEvents.Count / (double)PageSize);
+
+    private void NextPage()
+    {
+        if (_currentPage < TotalPages)
+        {
+            _currentPage++;
+        }
+    }
+
+    private void PrevPage()
+    {
+        if (_currentPage > 1)
+        {
+            _currentPage--;
+        }
+    }
+}
